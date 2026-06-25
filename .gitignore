@@ -1,0 +1,45 @@
+# Secrets and local config
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.crt
+id_rsa*
+*.pub
+
+# Private notes / real client or network info
+PRIVATE*
+private*
+real-client-data/
+client-data/
+secrets/
+
+# Backups and archives
+backups/
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+*.7z
+*.bak
+*.backup
+
+# Runtime data
+node_modules/
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+logs/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc

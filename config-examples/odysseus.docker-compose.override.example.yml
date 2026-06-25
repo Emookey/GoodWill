@@ -1,0 +1,8 @@
+services:
+  odysseus:
+    # Replace <TAILSCALE_IP> with your real Tailscale IP in your private local file.
+    # Do not commit your real Tailscale IP if this repo is public.
+    ports:
+      - "<TAILSCALE_IP>:7000:7000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
