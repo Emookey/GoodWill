@@ -107,3 +107,51 @@ Ollama:   http://127.0.0.1:11434/api/tags
 OpenWebUI http://127.0.0.1:3000
 Odysseus: http://127.0.0.1:7000
 ```
+
+
+---
+
+## 1100W PSU upgrade attempt: vendor mismatch shutdown
+
+### Symptom
+
+The system failed to get past `Initializing iDRAC...` when tested with newly received Dell 1100W EPP PSUs.
+
+### Tested hardware
+
+- `L1100E-S1 / DP/N 0CMPGM / Lite-On`
+- `D1100E-S0 / DP/N 0Y26KX / Delta`
+
+### Isolation steps
+
+- GTX 1060 auxiliary PCIe power was not connected.
+- Dell GPU/PCIe power cable was not installed.
+- RAID card was not installed.
+- Each PSU was tested individually.
+- Each PSU was tested in both bays.
+- Known-good 750W PSU was reinstalled as a control test.
+
+### Result
+
+Both 1100W units failed the same way in both bays:
+
+1. Solid green PSU LED during memory configuration.
+2. Reached `Initializing iDRAC...`.
+3. PSU LED flashed green.
+4. System shut down.
+
+The known-good 750W PSU continued to boot normally.
+
+### Log evidence
+
+```text
+Power Supply Status | Config Error: Vendor Mismatch | Asserted
+```
+
+### Conclusion
+
+The issue is not caused by iDRAC corruption, the GPU, the RAID card, or the PCIe GPU cable. The tested 1100W PSUs are not accepted by this T420/iDRAC/PDB combination.
+
+### Fix / next step
+
+Return or exchange the failed 1100W PSUs. Acquire a matched 1100W pair explicitly sold as PowerEdge T420/T620-compatible before continuing GPU-power testing.

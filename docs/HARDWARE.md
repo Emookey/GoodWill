@@ -75,3 +75,27 @@ Preferred future RAID controller families for a T420-era storage build:
 Avoid unknown/newer PERC cards unless exact compatibility is confirmed.
 
 See [`RAID_STORAGE_PLAN.md`](RAID_STORAGE_PLAN.md) for details.
+
+
+---
+
+## 1100W PSU compatibility test update
+
+A pair of Dell 1100W EPP PSUs was tested and rejected by the T420 during iDRAC/power initialization.
+
+Failed units:
+
+- `L1100E-S1 / DP/N 0CMPGM / Lite-On`
+- `D1100E-S0 / DP/N 0Y26KX / Delta`
+
+Control result: the known-good 750W PSU still boots the system normally.
+
+SEL result:
+
+```text
+Power Supply Status | Config Error: Vendor Mismatch | Asserted
+```
+
+Conclusion: these exact 1100W variants should not be used for this T420 GPU-power upgrade. Replace them with a matched pair explicitly sold as PowerEdge T420/T620-compatible.
+
+See [`PSU_TESTING.md`](PSU_TESTING.md).

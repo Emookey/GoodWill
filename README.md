@@ -63,11 +63,35 @@ Ubuntu Server
 | Boot storage | Direct-connected SATA SSD running Ubuntu Server |
 | GPU | NVIDIA GT 1030 currently working for light CUDA/model testing |
 | Future GPU | GTX 1060 6 GB planned after proper PSU/GPU power hardware |
-| PSU | Single known-good PSU currently stable; matched higher-wattage PSUs planned |
+| PSU | Single known-good 750W PSU currently stable; first 1100W PSU pair failed compatibility testing with PSU vendor mismatch |
 | Remote access | Tailscale only |
 | Monitoring | Uptime Kuma running through Docker with host networking |
 
 See [`docs/HARDWARE.md`](docs/HARDWARE.md) for more detail.
+
+---
+
+
+## Recent hardware test: 1100W PSU compatibility failure
+
+A pair of Dell 1100W EPP PSUs was tested before the GPU power cable arrived. Both units failed to complete POST in both PSU bays. The known-good 750W PSU still boots the system normally.
+
+Tested units:
+
+- `L1100E-S1 / DP/N 0CMPGM / Lite-On`
+- `D1100E-S0 / DP/N 0Y26KX / Delta`
+
+Observed result:
+
+- Solid green PSU LED during early startup
+- Hang around `Initializing iDRAC...`
+- PSU LED flashed green
+- System shut down
+- `ipmitool` SEL showed `Power Supply Status | Config Error: Vendor Mismatch | Asserted`
+
+Conclusion: these specific 1100W variants are not accepted by this T420/iDRAC/PDB combination. They should be returned or exchanged for a matched pair explicitly sold as PowerEdge T420/T620-compatible.
+
+See [`docs/PSU_TESTING.md`](docs/PSU_TESTING.md) for details.
 
 ---
 
