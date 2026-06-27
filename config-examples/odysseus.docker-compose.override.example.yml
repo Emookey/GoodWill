@@ -1,8 +1,12 @@
 services:
   odysseus:
-    # Replace <TAILSCALE_IP> with your real Tailscale IP in your private local file.
-    # Do not commit your real Tailscale IP if this repo is public.
-    ports:
-      - "<TAILSCALE_IP>:7000:7000"
+    # Do not add a duplicate ports rule here if the base Compose file already uses:
+    #   "${APP_BIND:-127.0.0.1}:${APP_PORT:-7000}:7000"
+    #
+    # Set APP_BIND and APP_PORT in the real private .env file instead.
+    #
+    # Example real .env values:
+    #   APP_BIND=0.0.0.0
+    #   APP_PORT=7000
     extra_hosts:
       - "host.docker.internal:host-gateway"

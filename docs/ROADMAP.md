@@ -12,17 +12,17 @@ Completed:
 - iDRAC updated and reachable
 - BIOS updated
 - Bad PSU isolated
-- GT 1030 working
 - NVIDIA driver working
 - Docker GPU runtime validated
 - Ollama working
 - Open WebUI working
 - Odysseus working
 - Uptime Kuma monitoring added
+- Docker port exposure issue documented and corrected
 
-## Phase 2: Mock MSP workload testing
+## Phase 2: Mock MSP workload and model testing
 
-Current focus.
+Status: Current focus.
 
 Tasks:
 
@@ -33,6 +33,9 @@ Tasks:
 - Test client-facing update drafts
 - Track model strengths and weaknesses
 - Compare small models on current hardware
+- Test local vision-language model support for screenshots/images
+- Determine whether Odysseus can pass image uploads to a vision-capable local model
+- Use Open WebUI as the fallback vision frontend if Odysseus image handling is not ready
 
 ## Phase 3: Hardware upgrade testing
 
@@ -45,6 +48,7 @@ Tasks:
 - Confirm `nvidia-smi`
 - Confirm Docker GPU runtime
 - Retest Ollama offload and larger models
+- Retest vision-model performance with better GPU acceleration
 
 ## Phase 4: Storage expansion
 
@@ -67,6 +71,7 @@ Tasks:
 - Define allowed data sources
 - Keep AI read-only at first
 - Keep humans in the remediation loop
+- Review whether local model endpoints require additional authentication or proxying
 
 ## Phase 6: Linux staging/admin workstation
 

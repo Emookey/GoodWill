@@ -15,6 +15,7 @@ Test local models with mock MSP-style workloads and evaluate how useful the Odys
 Current testing focuses on:
 
 - Local model behavior
+- Vision-capable model testing for screenshot/image analysis
 - Mock helpdesk and SaaS alert workflows
 - Documentation ingestion
 - Technician-facing troubleshooting output
@@ -51,6 +52,8 @@ Ubuntu Server
 → Local Qwen model testing
 ```
 
+Vision-capable local model testing has started with a small vision-language model. See [`docs/VISION_MODEL_TESTING.md`](docs/VISION_MODEL_TESTING.md).
+
 ---
 
 ## Hardware overview
@@ -61,16 +64,14 @@ Ubuntu Server
 | CPU | Dual Intel Xeon E5-2420 |
 | Memory | DDR3 ECC, A3 slot/channel avoided due to fault behavior |
 | Boot storage | Direct-connected SATA SSD running Ubuntu Server |
-| GPU | NVIDIA GT 1030 currently working for light CUDA/model testing |
-| Future GPU | GTX 1060 6 GB planned after proper PSU/GPU power hardware |
+| GPU | Light NVIDIA GPU testing validated; GTX 1060 6 GB remains planned after proper PSU/GPU power hardware |
 | PSU | Single known-good 750W PSU currently stable; first 1100W PSU pair failed compatibility testing with PSU vendor mismatch |
 | Remote access | Tailscale only |
-| Monitoring | Uptime Kuma running through Docker with host networking |
+| Monitoring | Uptime Kuma monitoring active |
 
 See [`docs/HARDWARE.md`](docs/HARDWARE.md) for more detail.
 
 ---
-
 
 ## Recent hardware test: 1100W PSU compatibility failure
 
@@ -92,6 +93,20 @@ Observed result:
 Conclusion: these specific 1100W variants are not accepted by this T420/iDRAC/PDB combination. They should be returned or exchanged for a matched pair explicitly sold as PowerEdge T420/T620-compatible.
 
 See [`docs/PSU_TESTING.md`](docs/PSU_TESTING.md) for details.
+
+---
+
+## Recent service recovery: Docker port exposure fix
+
+A service outage was investigated after vision-model setup work. Odysseus and Open WebUI were running internally, but were not reachable through the expected remote-access path.
+
+The outage was not caused by disk or memory exhaustion. The durable fix was to avoid narrow host-IP-specific Docker port bindings and instead publish the web services on all host interfaces while keeping remote access restricted through Tailscale/firewall policy.
+
+See:
+
+- [`docs/DOCKER_PORT_BINDING_NOTES.md`](docs/DOCKER_PORT_BINDING_NOTES.md)
+- [`docs/TROUBLESHOOTING_LOG.md`](docs/TROUBLESHOOTING_LOG.md)
+- [`docs/NETWORKING_AND_SECURITY.md`](docs/NETWORKING_AND_SECURITY.md)
 
 ---
 
@@ -143,7 +158,9 @@ See [`docs/NETWORKING_AND_SECURITY.md`](docs/NETWORKING_AND_SECURITY.md).
 
 ## Current known-good model path
 
-Odysseus runs in Docker while Ollama runs as a host-level Ubuntu service. The working Docker-to-host path uses:
+Odysseus runs in Docker while Ollama runs as a host-level Ubuntu service.
+
+The working Docker-to-host path uses:
 
 ```env
 OLLAMA_HOST=host.docker.internal
@@ -176,11 +193,14 @@ See [`docs/TROUBLESHOOTING_LOG.md`](docs/TROUBLESHOOTING_LOG.md) for the Odysseu
 │   ├── MOCK_MSP_TESTING.md
 │   ├── TROUBLESHOOTING_LOG.md
 │   ├── UPTIME_KUMA.md
+│   ├── VISION_MODEL_TESTING.md
+│   ├── DOCKER_PORT_BINDING_NOTES.md
 │   ├── ROADMAP.md
 │   └── CHANGELOG.md
 ├── config-examples/
 │   ├── odysseus.env.example
 │   ├── odysseus.docker-compose.override.example.yml
+│   ├── open-webui.docker-run.example.sh
 │   └── uptime-kuma.compose.example.yml
 ├── scripts/
 │   └── check_stack.sh
@@ -195,6 +215,8 @@ See [`docs/TROUBLESHOOTING_LOG.md`](docs/TROUBLESHOOTING_LOG.md) for the Odysseu
 
 - Keep the T420 stable
 - Monitor core services with Uptime Kuma
+- Test text-only local models against mock MSP workflows
+- Test vision-language model support for screenshot/image analysis
 - Build mock MSP documentation
 - Test prompts against repeatable helpdesk scenarios
 - Record what the model does well and poorly
