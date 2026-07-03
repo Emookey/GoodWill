@@ -1,8 +1,8 @@
 # GoodWill AI Workspace Lab
 
-A self-hosted AI workspace lab built on a Dell PowerEdge T420. The project is focused on testing whether a local AI assistant can support Managed Service Provider (MSP) workflows such as alert interpretation, troubleshooting, documentation lookup, technician notes, and client-facing update drafts.
+A self-hosted AI workspace lab built on a Dell PowerEdge T420. The project is focused on testing whether a local AI assistant can support Managed Service Provider (MSP) workflows such as alert interpretation, troubleshooting, documentation lookup, screenshot review, technician notes, and client-facing update drafts.
 
-> **Project status:** Active lab build. The system is currently usable for mock MSP workload testing, but it is not production-ready and should not ingest real client data yet.
+> Project status: Active lab build. The system is usable for mock MSP workload testing and early local vision testing, but it is not production-ready and should not ingest real client data yet.
 
 ---
 
@@ -10,7 +10,10 @@ A self-hosted AI workspace lab built on a Dell PowerEdge T420. The project is fo
 
 - Local model behavior
 - Custom Ollama model profiles for better long-document reasoning
+- GPU-accelerated model testing with a GTX 1060 6GB
 - Vision-capable model testing for screenshot/image analysis
+- Odysseus vs Open WebUI image-upload behavior
+- Long-standing / multi-turn vision conversations
 - Mock helpdesk and SaaS alert workflows
 - Documentation ingestion
 - Technician-facing troubleshooting output
@@ -25,62 +28,62 @@ A self-hosted AI workspace lab built on a Dell PowerEdge T420. The project is fo
 Ubuntu Server
 → NVIDIA Driver
 → Docker / Docker Compose
-→ NVIDIA Container Toolkit
+→ NVIDIA Container Toolkit / CDI
 → Ollama
 → Open WebUI
 → Tailscale remote access
 → Uptime Kuma monitoring
 → Odysseus AI Workspace
-→ Local Qwen model testing
-→ Custom Ollama model profile testing
+→ GTX 1060 6GB local GPU testing
+→ Custom Qwen project model
+→ Moondream local vision testing
 ```
+
+---
+
+## Recent milestone: powered GPU and first vision tests
+
+The lab has moved from slot-powered GPU validation to a working auxiliary-powered GPU configuration. A Dell-style GPU power cable is now installed and a GTX 1060 6GB is functioning under Ubuntu, NVIDIA drivers, and Ollama.
+
+Validated behavior:
+
+- `nvidia-smi` detects the GTX 1060 6GB.
+- Ollama can use the GPU for local inference.
+- The custom `qwen2.5:3b-project` model responds faster with GPU assistance.
+- `moondream` can load fully on GPU according to `ollama ps`.
+- Small image prompts work through Odysseus.
+- Open WebUI can see Ollama models after allowing Docker bridge access to the host Ollama port.
+
+Known limitations:
+
+- `qwen2.5vl:3b` works but is too slow for practical use on this hardware.
+- Multi-image / second-image behavior is still under test.
+- Real client data must not be used yet.
+
+See:
+
+- `docs/GPU_POWER_AND_VALIDATION.md`
+- `docs/VISION_MODEL_TESTING.md`
+- `docs/DOCKER_OLLAMA_CONNECTIVITY.md`
 
 ---
 
 ## Recommended local model roles
 
 | Model | Current use |
-|---|---|
+| --- | --- |
 | `qwen2.5:1.5b` | Quick/light testing |
 | `qwen2.5:3b` | Normal text questions and shorter reasoning tasks |
 | `qwen2.5:3b-project` | Long project-summary reasoning and structured recommendations |
-| `qwen2.5vl:3b` | Screenshot/image testing and vision-language validation |
+| `qwen2.5vl:3b` | Vision comparison only; too slow for routine use on current hardware |
+| `moondream` | Current lightweight vision model for small image/screenshot tests |
 
 The `qwen2.5:3b-project` profile uses a larger real Ollama context window than the default model. This was added after runtime checks showed plain `qwen2.5:3b` was running with a 4096-token context and long project summaries were being truncated.
-
-See [`docs/MODEL_TUNING_AND_CONTEXT.md`](docs/MODEL_TUNING_AND_CONTEXT.md).
-
----
-
-## Recent update: custom Ollama context profile
-
-Odysseus displayed a large model window for Qwen-family models, but runtime checks showed Ollama was actually loading plain `qwen2.5:3b` with a 4096-token context.
-
-The project now uses a custom Ollama model profile:
-
-```text
-qwen2.5:3b-project
-```
-
-Runtime validation showed:
-
-```text
-n_ctx_slot = 16384
-truncated = 0
-```
-
-This means the custom profile was using a 16k context window and the tested project summary was no longer being clipped.
-
-See:
-
-- [`docs/MODEL_TUNING_AND_CONTEXT.md`](docs/MODEL_TUNING_AND_CONTEXT.md)
-- [`config-examples/qwen2.5-3b-project.Modelfile`](config-examples/qwen2.5-3b-project.Modelfile)
-- [`scripts/check_ollama_context.sh`](scripts/check_ollama_context.sh)
 
 ---
 
 ## Important security notes
 
-This project is designed to be accessed through Tailscale only. Do not publicly expose SSH, Open WebUI, Odysseus, Ollama, Uptime Kuma, iDRAC, or any model/API endpoint.
+This project is designed to be accessed through private network controls such as Tailscale only. Do not publicly expose SSH, Open WebUI, Odysseus, Ollama, Uptime Kuma, iDRAC, or any model/API endpoint.
 
-Do not commit real secrets, real client data, `.env` files, Tailscale information, passwords, API keys, internal IPs, or backup archives to GitHub.
+Do not commit real secrets, real client data, `.env` files, Tailscale information, passwords, API keys, internal IPs, hostnames, usernames, or backup archives to GitHub.

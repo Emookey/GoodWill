@@ -1,108 +1,124 @@
 # Vision Model Testing
 
-## Purpose
+## Current status
 
-This document tracks the local vision-language model testing path for the GoodWill AI Workspace Lab.
+Local image analysis is now working at a basic level.
 
-The goal is to determine whether the current local AI stack can analyze screenshots/images in a useful way for mock MSP workflows.
+Current practical vision model:
 
-Potential future use cases:
+```text
+moondream
+```
 
-- Reading screenshots of errors
-- Summarizing visible warning messages
-- Interpreting basic application UI state
-- Helping a technician describe what is visible in a client-provided image
-- Drafting next troubleshooting steps based on screenshot context
+Current comparison model:
 
-This should remain mock-data-only until security and client-data policies are defined.
+```text
+qwen2.5vl:3b
+```
 
----
+## Model observations
 
-## Key conclusion
+### moondream
 
-The initial image-analysis issue is not purely a hardware limitation.
+Current role:
 
-Image analysis requires:
+- Lightweight local vision testing
+- Small/simple screenshots
+- Single-image prompt validation
+- Proving that the frontend can pass image data to Ollama
 
-1. A vision-capable model.
-2. A frontend that passes image data to the model.
-3. A backend/API path that supports image input.
+Observed behavior:
 
-Text-only models cannot analyze screenshots/images even if the hardware is capable.
+- Text-only test runs quickly.
+- `ollama ps` can show `PROCESSOR 100% GPU`.
+- Small image prompts can work through Odysseus.
+- Second-image or long-running multi-turn image conversations still need validation.
 
----
+### qwen2.5vl:3b
 
-## First vision model target
+Current role:
 
-Initial small test model:
+- Comparison vision-language model only.
+
+Observed behavior:
+
+- Functional, but too slow for practical use on the current hardware.
+- Can spend most work on CPU depending on offload behavior.
+- Not recommended as the main active vision model for this lab phase.
+
+## About `nvidia-smi` showing 0% GPU utilization
+
+For small models and short responses, `nvidia-smi` may show low or 0% instantaneous utilization even when the model is loaded on the GPU. GPU work can happen in short bursts between `nvidia-smi` polling intervals.
+
+Better indicators:
+
+- `ollama ps` processor split
+- VRAM usage
+- model process shown in `nvidia-smi`
+- response speed
+- `nvidia-smi dmon`
+- `nvidia-smi pmon`
+- `nvtop`
+
+Useful monitoring commands:
 
 ```bash
-ollama pull qwen2.5vl:3b
+watch -n 0.5 ollama ps
+watch -n 0.5 nvidia-smi
+nvidia-smi dmon -s pucm
+nvidia-smi pmon -c 20
+nvtop
 ```
 
-Important typo to avoid:
+## Recommended test flow
+
+### Test A: single image in a fresh chat
+
+1. Start a new chat.
+2. Select `moondream`.
+3. Upload a small/simple image.
+4. Prompt:
 
 ```text
-qwen2.5v1:3b  # wrong: uses number 1
-qwen2.5vl:3b  # correct: uses lowercase L for Vision-Language
+Describe this image in one sentence.
 ```
 
----
+### Test B: second image in the same chat
 
-## Recommended test order
-
-### 1. Confirm Ollama sees the model
-
-```bash
-ollama list
-```
-
-### 2. Test the model directly through Ollama
-
-Use a small PNG/JPG screenshot for first testing.
-
-The direct API test should confirm whether the model itself can process image input before troubleshooting frontends.
-
-### 3. Test through Open WebUI
-
-Open WebUI is the preferred first frontend test because it is a simpler local AI frontend and is useful as a fallback while Odysseus is being adjusted.
-
-Test prompt:
+1. Upload image 1.
+2. Ask for a short description.
+3. Wait for the model to respond.
+4. Upload image 2 in the same conversation.
+5. Prompt:
 
 ```text
-Analyze this screenshot. Describe what is visible and identify any visible errors or warnings.
+Ignore the previous image. Describe only this new image.
 ```
 
-### 4. Test through Odysseus
+### Test C: compare frontends
 
-After Ollama and Open WebUI work, test whether Odysseus can pass uploaded images/screenshots to the selected local vision-language model.
+Repeat Test A and Test B in both:
 
-If Odysseus cannot pass image data correctly yet, continue using Open WebUI as the temporary vision frontend.
+- Odysseus
+- Open WebUI
 
----
+Interpretation:
 
-## Hardware expectations
+- If Open WebUI works but Odysseus fails, the issue is likely frontend-specific.
+- If both fail on second-image prompts, the issue may be model/Ollama/multi-image behavior.
+- If fresh chats work but same-chat second images fail, document a multi-turn image limitation.
 
-The current server may run small vision-language models slowly, especially without the planned GPU power upgrade.
-
-The immediate test goal is:
+## Recommended MSP screenshot prompt
 
 ```text
-Prove image analysis works at all.
+You are helping an MSP technician. Review this screenshot and list:
+1. What application or screen appears to be shown.
+2. Any visible error messages or warnings.
+3. Likely cause.
+4. First troubleshooting steps.
+5. A short client-facing update.
 ```
 
-The later optimization goal is:
+## Current limitation
 
-```text
-Improve speed and model size after the GPU/PSU power path is corrected.
-```
-
----
-
-## Current next steps
-
-- Test `qwen2.5vl:3b` directly through Ollama.
-- Test image upload through Open WebUI.
-- Confirm whether Odysseus can pass image uploads to the selected model.
-- Document whether the model gives useful output for mock MSP screenshots.
-- Retest performance after GPU power hardware is corrected.
+Vision testing is not production-ready. Use mock screenshots only. Do not upload real client data, PHI, credentials, private tickets, or sensitive internal documentation.

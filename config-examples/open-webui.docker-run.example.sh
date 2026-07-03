@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-# Open WebUI durable standalone container example.
-#
-# This example preserves the named Docker volume:
-#   open-webui -> /app/backend/data
-#
-# It publishes Open WebUI on host port 3000 and container port 8080.
-# Restrict real access with Tailscale/firewall policy. Do not publicly expose this service.
+# Example Open WebUI container run command.
+# This preserves the named Docker volume and maps host.docker.internal to the Docker host gateway.
+# Review firewall rules before using this in your environment.
 
 docker run -d \
   --name open-webui \
@@ -15,4 +9,5 @@ docker run -d \
   -p 3000:8080 \
   -v open-webui:/app/backend/data \
   --add-host=host.docker.internal:host-gateway \
+  -e OLLAMA_BASE_URL=http://host.docker.internal:11434 \
   ghcr.io/open-webui/open-webui:main
