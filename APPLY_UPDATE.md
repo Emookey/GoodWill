@@ -1,30 +1,39 @@
-# GoodWill Repository Update Package - 2026-06-27
+# Apply GoodWill Arch Staging Laptop Update
 
-This ZIP is intended to be extracted into the root of the `Emookey/GoodWill` repository.
+This update package adds sanitized documentation and example files for the Arch Linux staging/admin laptop used with the GoodWill AI workspace project.
 
-It updates the public repository documentation for:
+## Files included
 
-- Custom Ollama model profile creation
-- Real runtime context verification with `ollama ps`
-- Ollama log interpretation
-- Reverting the Odysseus source-code context edit
-- Using `qwen2.5:3b-project` for long project-summary reasoning
-- Keeping `qwen2.5vl:3b` focused on vision/screenshot testing
+```text
+README_STAGING_LAPTOP_UPDATE.md
+docs/ARCH_STAGING_LAPTOP_SETUP.md
+docs/GOODWILL_STAGING_CHECK_SCRIPT.md
+docs/CHANGELOG_ARCH_STAGING_LAPTOP_2026-07-03.md
+config-examples/goodwill.env.example
+scripts/goodwill-check-laptop.example.sh
+```
 
-## Suggested apply flow
+## Privacy reminder
 
-From your local repository root:
+Do not commit real LAN IPs, Tailscale IPs, passwords, `.env` files, SSH private keys, raw logs, screenshots with sensitive details, backups, or private project summaries.
+
+The real private workspace should stay outside the public repo, for example:
+
+```text
+~/GoodWill-Lab
+~/.config/goodwill/goodwill.env
+~/bin/goodwill-check
+```
+
+## Suggested Git workflow
+
+From the root of your local `GoodWill` repo after copying/extracting these files:
 
 ```bash
-git checkout -b update-custom-ollama-context
-# Extract this ZIP into the repo root, allowing overwrites.
 git status
-git diff
-git add README.md docs config-examples scripts/check_ollama_context.sh APPLY_UPDATE.md
-git commit -m "Document custom Ollama context profile"
+git add README_STAGING_LAPTOP_UPDATE.md docs/ARCH_STAGING_LAPTOP_SETUP.md docs/GOODWILL_STAGING_CHECK_SCRIPT.md docs/CHANGELOG_ARCH_STAGING_LAPTOP_2026-07-03.md config-examples/goodwill.env.example scripts/goodwill-check-laptop.example.sh APPLY_UPDATE.md
+git commit -m "Document Arch staging laptop setup"
 git push
 ```
 
-## Public-safety note
-
-This package intentionally does not include real Tailscale IPs, LAN IPs, passwords, `.env` files, API keys, usernames, or client data.
+Review every file before pushing.
