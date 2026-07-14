@@ -16,6 +16,7 @@ A self-hosted AI workspace lab built on a Dell PowerEdge T420. The project is fo
 - Long-standing / multi-turn vision conversations
 - Mock helpdesk and SaaS alert workflows
 - Documentation ingestion
+- Persistent multi-client RAG retrieval and exact-identifier lookup
 - Technician-facing troubleshooting output
 - Client-facing update generation
 - System stability and monitoring
@@ -65,6 +66,35 @@ See:
 - `docs/GPU_POWER_AND_VALIDATION.md`
 - `docs/VISION_MODEL_TESTING.md`
 - `docs/DOCKER_OLLAMA_CONNECTIVITY.md`
+
+---
+
+## Recent milestone: functional multi-client RAG
+
+Odysseus can now use persistent Library documents for mock MSP lookups without attaching the source files to each chat.
+
+Validated behavior:
+
+- Library documents synchronize from SQLite into ChromaDB.
+- Existing Library records can be backfilled into the vector index.
+- Exact identifiers such as workstation, user, printer, and ticket IDs receive deterministic literal-match handling.
+- ACME Dental and Pine Ridge Township use atomic RAG indexes instead of wide tables.
+- Single-client lookups return the expected device and user details.
+- Cross-client comparisons preserve the `ACME-*`, `PRT-BOR-*`, and `PRT-PD-*` namespaces.
+- Mock ticket answer keys remain outside persistent RAG during blind testing.
+
+Current status:
+
+- Functional for sanitized mock-data testing.
+- Retrieval and prompt tuning are still ongoing.
+- The system is not approved for real client data or autonomous remediation.
+
+See:
+
+- `docs/ODYSSEUS_LIBRARY_RAG_IMPLEMENTATION.md`
+- `docs/RAG_INDEX_FORMAT_GUIDE.md`
+- `docs/MOCK_DATA_RAG_TESTING.md`
+- `mock-data/multi-client-rag/README.md`
 
 ---
 

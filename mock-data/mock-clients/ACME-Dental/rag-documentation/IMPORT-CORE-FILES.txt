@@ -1,0 +1,10 @@
+Import these files into the persistent Odysseus Library:
+
+rag-indexes/core/ACME-Dental-Client-RAG-Index.md
+rag-indexes/core/ACME-Dental-Client-Resource-RAG-Index.md
+rag-indexes/core/ACME-Dental-Printer-RAG-Index.md
+rag-indexes/core/ACME-Dental-RAG-Authority-Index.md
+rag-indexes/core/ACME-Dental-SOP-RAG-Index.md
+rag-indexes/core/ACME-Dental-User-Device-RAG-Index.md
+
+Do not import testing/ACME-Dental-Mock-Tickets-Atomic.md for clean inventory tests.

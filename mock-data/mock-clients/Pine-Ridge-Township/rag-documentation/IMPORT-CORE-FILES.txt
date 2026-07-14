@@ -1,0 +1,14 @@
+Import these files into the persistent Odysseus Library:
+
+rag-indexes/core/PRT-Township-RAG-Authority-Index.md
+rag-indexes/core/PRT-Township-Client-RAG-Index.md
+rag-indexes/core/PRT-Township-Permission-RAG-Index.md
+rag-indexes/core/PRT-Township-Shared-SOP-RAG-Index.md
+rag-indexes/core/PRT-Borough-User-Device-RAG-Index.md
+rag-indexes/core/PRT-Borough-Client-Resource-RAG-Index.md
+rag-indexes/core/PRT-Borough-SOP-RAG-Index.md
+rag-indexes/core/PRT-Police-User-Device-RAG-Index.md
+rag-indexes/core/PRT-Police-Client-Resource-RAG-Index.md
+rag-indexes/core/PRT-Police-SOP-RAG-Index.md
+
+Optional history files are under rag-indexes/optional-history/.
